@@ -198,11 +198,33 @@ body.ed .ibr{display:block;position:absolute;right:-8px;bottom:-8px;width:16px;h
 .bhd{display:none}
 body.ed .blk.sel .bhd{display:block;position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);width:84px;height:18px;border-radius:99px;background:var(--acc);border:2px solid #fff;cursor:ns-resize;z-index:6;touch-action:none}
 .bhd::after{content:"";position:absolute;left:22px;right:22px;top:6px;height:2px;border-radius:2px;background:#fff}
+/* abas arrastáveis */
+.tg{cursor:grab;opacity:.6;font-size:.8rem;letter-spacing:-2px;touch-action:none;user-select:none;padding:0 2px}
+.tab.tdrag{opacity:.45}
+.tab.dropb{box-shadow:-4px 0 0 var(--acc)}
+.tab.dropa{box-shadow:4px 0 0 var(--acc)}
+/* tema mosquito / dengue */
+.brand::before{content:"";display:inline-block;width:1.15em;height:1.15em;margin-right:.35em;vertical-align:-.2em;background:var(--acc);-webkit-mask:var(--mq) center/contain no-repeat;mask:var(--mq) center/contain no-repeat}
+.blk h2::before{content:"";display:inline-block;width:.75em;height:.75em;margin-right:.35em;vertical-align:-.02em;background:var(--acc);-webkit-mask:var(--mq) center/contain no-repeat;mask:var(--mq) center/contain no-repeat}
+.hero{background-image:var(--mqw),radial-gradient(rgba(255,255,255,.14) 1.5px,transparent 1.5px);background-size:240px 240px,22px 22px}
+.hero .in{position:relative;z-index:1}
+.hero::before{content:"";position:absolute;right:5%;top:50%;width:clamp(120px,24vw,300px);aspect-ratio:1;transform:translateY(-50%) rotate(14deg);background:rgba(255,255,255,.2);-webkit-mask:var(--mq) center/contain no-repeat;mask:var(--mq) center/contain no-repeat;pointer-events:none;animation:mqf 7s ease-in-out infinite}
+@keyframes mqf{0%,100%{transform:translateY(-50%) rotate(14deg)}50%{transform:translateY(-56%) rotate(6deg)}}
+@media(prefers-reduced-motion:reduce){.hero::before{animation:none}}
+.card{border-top:4px solid var(--acc)}
+.card h3::before{content:"";display:inline-block;width:.7em;height:.85em;margin-right:.45em;background:var(--acc);-webkit-mask:var(--drop) center/contain no-repeat;mask:var(--drop) center/contain no-repeat}
+#mn::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--acc);opacity:.06;-webkit-mask:var(--mqt) 0 0/240px 240px;mask:var(--mqt) 0 0/240px 240px}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) #mn::before{opacity:.1}}
+:root[data-theme="dark"] #mn::before{opacity:.1}
+#hd{border-bottom:3px solid var(--acc)}
+.ft{display:flex;gap:10px;align-items:center;justify-content:center;padding:28px clamp(16px,5vw,64px);font:600 .95rem var(--hd);text-align:center;opacity:.85}
+.ft i{flex:none;width:26px;height:26px;background:var(--acc);-webkit-mask:var(--mq) center/contain no-repeat;mask:var(--mq) center/contain no-repeat}
 </style>
 </head>
 <body>
 <header id="hd"></header>
 <main id="mn"></main>
+<footer class="ft"><i aria-hidden="true"></i><span>Elimine a água parada: cada recipiente virado é um criadouro a menos do Aedes aegypti.</span></footer>
 <div id="menu" hidden>
 <button data-add="hero">Destaque (capa)</button><button data-add="heading">Título</button>
 <button data-add="text">Texto</button><button data-add="image">Imagem</button>
@@ -343,11 +365,19 @@ const BT=(a,t,l,v)=>`<button data-a="${a}"${v?` data-v="${v}"`:''} title="${l}" 
 const tb=b=>`<div class="tb" role="toolbar" aria-label="Ferramentas do bloco">${BT('up','↑','Mover para cima')}${BT('dn','↓','Mover para baixo')}${BT('al','⇤','Alinhar à esquerda','left')}${BT('al','↔','Centralizar','center')}${BT('al','⇥','Alinhar à direita','right')}${BT('fsd','A−','Diminuir texto')}${BT('fsu','A+','Aumentar texto')}${BT('pdd','↕−','Menos espaço')}${BT('pdu','↕+','Mais espaço')}<label>Texto <input type="color" data-k="color" value="${b.color||'#000000'}"></label><label>Fundo <input type="color" data-k="bg" value="${b.bg||'#ffffff'}"></label>${BT('bgi','Imagem de fundo','Escolher imagem de fundo')}${b.bg||b.bgi?BT('nobg','Limpar fundo','Remover fundo'):''}${b.bgi?`<label>Escurecer <input type="range" data-k="ov" min="0" max=".85" step=".05" value="${b.ov}"></label>`:''}${BT('addimg','🖼+','Adicionar caixa de imagem (arraste dentro do bloco)')}<label>Altura do bloco <input type="range" data-k="bh" min="0" max="1600" step="10" value="${b.bh||0}"></label>${b.bh?BT('bhauto','Auto','Altura automática'):''}${b.t==='image'?`<label>Largura <input type="range" data-k="w" min="20" max="100" value="${b.w}"></label>`:''}${b.t==='split'?BT('flip','⇄','Inverter lados'):''}${b.t==='embed'?`<label>Link <input type="url" data-k="u" value="${e(b.u||'')}"></label><label>Altura <input type="range" data-k="hh" min="240" max="900" step="20" value="${b.hh||560}"></label>`:''}${(b.t==='image'||b.t==='split')&&b.src?BT('noimg','Remover imagem','Remover imagem'):''}${b.t==='map'?BT('csv','Carregar CSV','Substituir os dados por um arquivo CSV'):''}${b.t==='cards'?BT('addc','+ Cartão','Adicionar cartão')+BT('delc','− Cartão','Remover cartão'):''}${b.off&&Object.keys(b.off).length?BT('rpos','⟲ Posições','Restaurar a posição original dos textos'):''}${BT('dup','⧉','Duplicar bloco')}${BT('del','🗑','Excluir bloco')}</div>`;
 const ibs=b=>(b.imgs||[]).map(i=>`<div class="ib" data-iid="${i.id}" style="left:${i.x}%;top:${i.y}%;width:${i.w}%"><img src="${i.src}" alt="">${editing?`<button class="ibx" type="button" data-a="delimg" data-v="${i.id}" aria-label="Remover imagem" title="Remover imagem">×</button><span class="ibr" title="Arraste para redimensionar"></span>`:''}</div>`).join('');
 const blk=b=>`<section class="blk ${b.t}${b.id===sel?' sel':''}" data-id="${b.id}" style="${st(b)}">${editing?tb(b):''}${body[b.t](b)}${ibs(b)}${editing?'<div class="bhd" title="Arraste para alterar a altura do bloco"></div>':''}</section>`;
-function applyG(){const r=document.documentElement;r.style.setProperty('--acc',S.acc);r.style.setProperty('--hd',F[S.font]);S.theme==='auto'?r.removeAttribute('data-theme'):r.dataset.theme=S.theme;const s=document.body.style;s.backgroundColor=S.bg||'';s.backgroundImage=S.bgi?`url(${S.bgi})`:''}
+const MQB="<ellipse cx='32' cy='27' rx='6' ry='7'/><ellipse cx='32' cy='42' rx='4.5' ry='13'/><circle cx='32' cy='17' r='4.5'/><path d='M32 13V2' stroke-width='1.8' fill='none'/><path d='M30 14L24 6M34 14L40 6M27 30L12 40L8 54M27 34L14 48L12 60M37 30L52 40L56 54M37 34L50 48L52 60' fill='none' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/><ellipse cx='16' cy='26' rx='13' ry='5' fill-opacity='.55' stroke='none' transform='rotate(-25 16 26)'/><ellipse cx='48' cy='26' rx='13' ry='5' fill-opacity='.55' stroke='none' transform='rotate(25 48 26)'/>";
+const DRP="<path d='M32 4C32 4 12 28 12 42a20 20 0 0 0 40 0C52 28 32 4 32 4z' stroke='none'/>";
+const mqU=(x,y,r,s)=>`<g transform='translate(${x} ${y}) rotate(${r} 32 32) scale(${s})'>${MQB}</g>`;
+const SVG=(vb,inner,col)=>`<svg xmlns='http://www.w3.org/2000/svg' viewBox='${vb}'><g fill='${col}' stroke='${col}'>${inner}</g></svg>`;
+const tile=col=>SVG('0 0 240 240',mqU(20,24,25,.8)+mqU(150,70,-35,.55)+mqU(70,150,200,.65)+`<g transform='translate(190 170) scale(.4)'>${DRP}</g><g transform='translate(14 110) scale(.3)'>${DRP}</g>`,col);
+const URI=s=>'url("data:image/svg+xml,'+encodeURIComponent(s)+'")';
+const GFX={'--mq':URI(SVG('0 0 64 64',MQB,'#000')),'--drop':URI(SVG('0 0 64 64',DRP,'#000')),'--mqt':URI(tile('#000')),'--mqw':URI(tile('#fff'))};
+const gp=()=>editing&&S.pages.length>1?'<span class="tg" title="Arraste para mudar a ordem da aba" aria-hidden="true">⋮⋮</span>':'';
+function applyG(){const r=document.documentElement;Object.keys(GFX).forEach(k=>r.style.setProperty(k,GFX[k]));r.style.setProperty('--acc',S.acc);r.style.setProperty('--hd',F[S.font]);S.theme==='auto'?r.removeAttribute('data-theme'):r.dataset.theme=S.theme;const s=document.body.style;s.backgroundColor=S.bg||'';s.backgroundImage=S.bgi?`url(${S.bgi})`:''}
 function render(){
 const pg=P();cur=pg.id;applyG();
 document.title=S.title.replace(/<[^>]*>/g,'')||'Lorem Ipsum';
-$('#hd').innerHTML=`<span class="brand" data-s="1"${editing?' contenteditable="true"':''}>${S.title}</span><nav aria-label="Abas">`+S.pages.map(p=>p.id===cur?`<span class="tab on"><span data-pn${editing?' contenteditable="true"':''}>${e(p.name)}</span>${editing&&S.pages.length>1?'<button data-a="delp" aria-label="Excluir aba" title="Excluir aba">×</button>':''}</span>`:`<button class="tab" data-p="${p.id}">${e(p.name)}</button>`).join('')+(editing?'<button class="tab add" data-a="addp">+ Aba</button>':'')+'</nav>'+gear();
+$('#hd').innerHTML=`<span class="brand" data-s="1"${editing?' contenteditable="true"':''}>${S.title}</span><nav aria-label="Abas">`+S.pages.map(p=>p.id===cur?`<span class="tab on" data-pid="${p.id}">${gp()}<span data-pn${editing?' contenteditable="true"':''}>${e(p.name)}</span>${editing&&S.pages.length>1?'<button data-a="delp" aria-label="Excluir aba" title="Excluir aba">×</button>':''}</span>`:`<button class="tab" data-p="${p.id}" data-pid="${p.id}">${gp()}${e(p.name)}</button>`).join('')+(editing?'<button class="tab add" data-a="addp">+ Aba</button>':'')+'</nav>'+gear();
 $('#mn').innerHTML=pg.blocks.map(blk).join('')||(editing?'<p class="empty">Aba vazia. Use + Bloco para adicionar conteúdo.</p>':'');
 document.body.classList.toggle('ed',editing);
 document.querySelectorAll('.mw').forEach(upd);
@@ -405,7 +435,7 @@ document.addEventListener('click',ev=>{
 const t=ev.target;
 if(!t.closest('#menu,[data-a=menu]'))$('#menu').hidden=true;
 if(gmOpen&&!t.closest('.gw')){gmOpen=false;loginOpen=false;const l=$('.lg');if(l)l.hidden=true;const m=$('.gm'),g=$('.gb');if(m)m.hidden=true;if(g)g.setAttribute('aria-expanded','false')}
-const pb=t.closest('[data-p]');if(pb){cur=pb.dataset.p;sel=null;return render()}
+const pb=t.closest('[data-p]');if(pb&&!t.closest('.tg')){cur=pb.dataset.p;sel=null;return render()}
 const ad=t.closest('[data-add]');
 if(ad){snap();const nb=T[ad.dataset.add]();P().blocks.push(nb);sel=nb.id;$('#menu').hidden=true;commit();const el=document.querySelector(`[data-id="${nb.id}"]`);if(el)el.scrollIntoView({block:'center'});return}
 const ab=t.closest('[data-a]'),bk=t.closest('.blk');
@@ -521,6 +551,14 @@ if(ig.k==='m'){const l=Math.min(Math.max(0,ig.l0+dx),Math.max(0,ig.sw-ig.w0)),t=
 else{const w=Math.min(Math.max(40,ig.w0+dx),Math.max(40,ig.sw-ig.l0));ig.it.w=pct(Math.min(100,w/ig.sw*100));ig.el.style.width=ig.it.w+'%'}});
 const igEnd=()=>{if(!ig)return;if(ig.el)ig.el.classList.remove('mv');if(ig.ch){hist.push(ig.snap);if(hist.length>8)hist.shift();save()}ig=null};
 document.addEventListener('pointerup',igEnd);document.addEventListener('pointercancel',igEnd);
+/* reordenar abas arrastando (modo de edição) */
+let tgd=null;
+const tgClr=()=>document.querySelectorAll('.tab.dropb,.tab.dropa,.tab.tdrag').forEach(x=>x.classList.remove('dropb','dropa','tdrag'));
+document.addEventListener('pointerdown',ev=>{if(!editing||!ev.target.closest)return;const g=ev.target.closest('.tg');if(!g)return;const tab=g.closest('[data-pid]');if(!tab)return;ev.preventDefault();tgd={id:tab.dataset.pid,tab,drop:null,snap:JSON.stringify(S)};tab.classList.add('tdrag');g.setPointerCapture(ev.pointerId)});
+document.addEventListener('pointermove',ev=>{if(!tgd)return;document.querySelectorAll('.tab.dropb,.tab.dropa').forEach(x=>x.classList.remove('dropb','dropa'));tgd.drop=null;
+for(const t of document.querySelectorAll('#hd [data-pid]')){if(t===tgd.tab)continue;const r=t.getBoundingClientRect();if(ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top-6&&ev.clientY<=r.bottom+6){const af=ev.clientX>r.left+r.width/2;t.classList.add(af?'dropa':'dropb');tgd.drop={id:t.dataset.pid,af};break}}});
+const tgEnd=ev=>{if(!tgd)return;const q=tgd;tgd=null;tgClr();if(!q.drop||ev.type==='pointercancel')return;const a=S.pages,i=a.findIndex(p=>p.id===q.id);if(i<0)return;const m=a.splice(i,1)[0],j=a.findIndex(p=>p.id===q.drop.id);if(j<0){a.splice(i,0,m);return}a.splice(q.drop.af?j+1:j,0,m);hist.push(q.snap);if(hist.length>8)hist.shift();commit()};
+document.addEventListener('pointerup',tgEnd);document.addEventListener('pointercancel',tgEnd);
 async function doLogin(){const u=$('#lu'),p=$('#lp'),m=$('.lerr');if(!u||!p)return;const fail=t=>{if(m)m.textContent=t;p.value='';p.focus()};
 if(REMOTE){try{const r=await fetch(CFG.url.replace(/\/$/,'')+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:CFG.key,'Content-Type':'application/json'},body:JSON.stringify({email:u.value.trim(),password:p.value})});const j=await r.json();if(!r.ok||!j.access_token)return fail('E-mail ou senha incorretos.');try{sessionStorage.setItem('dengue-tok',j.access_token)}catch(x){}}catch(x){return fail('Não foi possível conectar ao servidor.')}}
 else if(!(u.value.trim()==='admin'&&p.value==='admin'))return fail('Usuário ou senha incorretos.');
